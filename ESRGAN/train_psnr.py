@@ -4,6 +4,7 @@ import tensorflow as tf
 from modules.esrgan import rrdb_net
 from modules.lr_scheduler import MultiStepLR
 from modules.data import load_dataset
+from modules.losses import get_pixel_loss
 
 HAS_WANDB_ACCOUNT = True
 PROJECT = 'esrgan-tf2'
@@ -19,12 +20,14 @@ LR_STEPS = [200000, 400000, 600000, 800000]
 ADAM_BETA1_G = 0.9
 ADAM_BETA2_G = 0.99
 W_PIXEL = 1.0
+PIXEL_CRITERION = 'l1'
 
 HR_HEIGHT = 128
 HR_WIDTH = 128
 SCALE = 4
 BATCH_SIZE = 16
 BUFFER_SIZE = 10240
+INPUT_SHAPE=(None, None, 3)
 
 NUM_ITER = 1000000
 SAVE_STEPS = 5000
@@ -42,13 +45,13 @@ def main():
     dataset = dataset.repeat()
     dataset = dataset.shuffle(BUFFER_SIZE).batch(BATCH_SIZE).prefetch(tf.data.experimental.AUTOTUNE)
     
-    model = rrdb_net()
+    model = rrdb_net(input_shape=INPUT_SHAPE,scale_factor=SCALE)
     learning_rate = MultiStepLR(INITIAL_LR, LR_STEPS, LR_RATE)
     optimizer = tf.keras.optimizer.Adam(learning_rate= learning_rate
                                         beta_1= ADAM_BETA1_G
                                         beta_2= ADAM_BETA2_G
                                         )
-    pixel_loss = tf.keras.losses.MeanAbsoluteError()
+    pixel_loss = get_pixel_loss(PIXEL_CRITERION)
 
     checkpoint = tf.train.Checkpoint(step=tf.Variable(0, name='step'),
                                      optimizer=optimizer,

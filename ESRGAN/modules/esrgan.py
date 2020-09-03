@@ -1,6 +1,6 @@
 import tensorflow as tf 
 from tensorflow.keras import Model
-from tensorflow.keras.layers import Input, Conv2D, LeakyReLU, PReLU
+from tensorflow.keras.layers import Input, Conv2D, LeakyReLU, PReLU, Dropout
 from tensorflow.keras.layers import BatchNormalization, Concatenate, Lambda, Add
 
 
@@ -76,7 +76,7 @@ def conv2d_block(input, filters, strides=1, bn=True):
     return x
 
 
-def discriminator(input_shape=(None, None, 3), filters=64, name='Discriminator'):
+def discriminator_net(input_shape=(None, None, 3), filters=64, name='Discriminator'):
     img = Input(shape=input_shape)
 
     x = conv2d_block(img, filters, bn=False)
@@ -89,7 +89,8 @@ def discriminator(input_shape=(None, None, 3), filters=64, name='Discriminator')
     x = conv2d_block(x, filters*8, strides=2)
     x = Dense(filters*16)(x)
     x = LeakyReLU(alpha=0.2)(x)
-    x = Dense(1, activation='sigmoid')(x)
+    x = Dropout(0.4)(x)
+    x = Dense(1)(x) 
 
     return Model(inputs=img, outputs=x, name=name)
 
