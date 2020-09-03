@@ -1,11 +1,3 @@
-"""
-SRGAN Keras
-load div2k dataset
-random crop with hr image size
-downsample hr image with bicubic method (lr image)
-create tensorflow dataset
-
-"""
 import os
 import random
 import tensorflow as tf

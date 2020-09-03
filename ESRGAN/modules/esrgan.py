@@ -44,12 +44,12 @@ def upsample(input_tensor, filters, scale_factor=2):
     x = PReLU(shared_axes=[1,2])(x)
     return x
 
-def rrdb_net(input_shape=(None, None, 3), filters=64, scale_factor=4):
+def rrdb_net(input_shape=(None, None, 3), filters=64, scale_factor=4, name='RRDB_model'):
     lr_image = Input(shape=input_shape, name='input')
 
     #Pre-residual
     x_start = Conv2D(filters, kernel_size=3, strides=1, padding='same')(lr_image)
-    x_start = LeakyReLU(0.2)(x)
+    x_start = LeakyReLU(0.2)(x_start)
 
     #Residual block 
     x = rrdb(x_start, filters)
@@ -57,7 +57,7 @@ def rrdb_net(input_shape=(None, None, 3), filters=64, scale_factor=4):
     #Post Residual block
     x = Conv2D(filters,  kernel_size=3, strides=1, padding='same')(x)
     x = Lambda(lambda x: x * 0.2)(x)
-    x = Add()[x, x_start]
+    x = Add()([x, x_start])
 
     #Upsampling
     x = upsample(x, filters, scale_factor)
@@ -66,7 +66,7 @@ def rrdb_net(input_shape=(None, None, 3), filters=64, scale_factor=4):
     x = LeakyReLU(0.2)(x)
     out = Conv2D(filters=3, kernel_size=3, strides=1, padding='same')(x)
 
-    return Model(inputs=lr_image, outputs=out)
+    return Model(inputs=lr_image, outputs=out, name=name)
 
 def conv2d_block(input, filters, strides=1, bn=True):
     x = Conv2D(filters, kernel_size=3, strides=strides, padding='same')(x)
@@ -76,7 +76,7 @@ def conv2d_block(input, filters, strides=1, bn=True):
     return x
 
 
-def discriminator(input_shape=(None, None, 3), filters=64):
+def discriminator(input_shape=(None, None, 3), filters=64, name='Discriminator'):
     img = Input(shape=input_shape)
 
     x = conv2d_block(img, filters, bn=False)
@@ -91,7 +91,7 @@ def discriminator(input_shape=(None, None, 3), filters=64):
     x = LeakyReLU(alpha=0.2)(x)
     x = Dense(1, activation='sigmoid')(x)
 
-    return Model(inputs=img, outputs=x)
+    return Model(inputs=img, outputs=x, name=name)
 
 
 

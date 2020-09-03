@@ -1,7 +1,0 @@
-# general setting
-batch_size: 16
-lr_size: 32
-hr_size: 128
-ch_size: 3
-scale: 4
-sub_name: "psnr_pretrain"
