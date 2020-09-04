@@ -69,8 +69,8 @@ def main():
     @tf.function
     def train_step(lr, hr):
         with tf.GradientTape() as tape:
-            sr = model(lr, training=True)
-            loss = W_PIXEL * pixel_loss(hr, sr)
+            generated_hr = model(lr, training=True)
+            loss = W_PIXEL * pixel_loss(hr, generated_hr)
 
         grads = tape.gradient(loss, model.trainable_variables)
         optimizer.apply_gradients(zip(grads, model.trainable_variables))
@@ -89,7 +89,7 @@ def main():
         checkpoint.step.assing_add(1)
         steps = checkpoint.step.numpy()
         loss = train_step(lr, hr)
-        wandb.log({"step": steps, "loss": loss, "learning_rate": optimizer.lr(steps).numpy()})
+        wandb.log({"steps": steps, "loss": loss, "learning_rate": optimizer.lr(steps).numpy()})
         pbar.set_description("loss={:.4f}, lr={:.1e}".format(loss, optimizer.lr(steps).numpy()))
         pbar.update(1)
         if steps % SAVE_STEPS == 0:
