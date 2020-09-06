@@ -25,7 +25,7 @@ ADAM_BETA1_D = 0.9
 ADAM_BETA2_D = 0.99
 
 PIXEL_CRITERION = 'l1'
-FEATURE_CRITERION = 'l1'
+FEATURE_CRITERION = 'l2'
 GAN_TYPE = 'ragan'
 WEIGHT_PIXEL = 1e-2
 WEIGHT_FEATURE = 1.0
@@ -61,12 +61,12 @@ def main():
 
     learning_rate_G = MultiStepLR(INITIAL_LR_G, LR_STEPS, LR_RATE)
     learning_rate_D = MultiStepLR(INITIAL_LR_D, LR_STEPS, LR_RATE)
-    optimizer_G = tf.keras.optimizer.Adam(learning_rate= learning_rate_G
-                                        beta_1= ADAM_BETA1_G
+    optimizer_G = tf.keras.optimizers.Adam(learning_rate= learning_rate_G,
+                                        beta_1= ADAM_BETA1_G,
                                         beta_2= ADAM_BETA2_G
                                         )
-    optimizer_D = tf.keras.optimizer.Adam(learning_rate= learning_rate_D
-                                        beta_1= ADAM_BETA1_D
+    optimizer_D = tf.keras.optimizers.Adam(learning_rate= learning_rate_D,
+                                        beta_1= ADAM_BETA1_D,
                                         beta_2= ADAM_BETA2_D
                                         )
 
@@ -76,8 +76,10 @@ def main():
     discriminator_loss = get_discriminator_loss(GAN_TYPE)
 
     checkpoint = tf.train.Checkpoint(step=tf.Variable(0, name='step'),
-                                     optimizer=optimizer,
-                                     model=model)
+                                     optimizer_G=optimizer_G,
+                                     optimizer_D=optimizer_D,
+                                     model=generator,
+                                     discriminator=discriminator)
     manager = tf.train.CheckpointManager(checkpoint=checkpoint,
                                          directory=CHECK_POINT_PATH,
                                          max_to_keep=3)
@@ -130,7 +132,7 @@ def main():
         wandb.init(id=wandb_run_id)
     remain_steps = max(NUM_ITER - checkpoint.step.numpy(), 0)
     pbar = tqdm(total=remain_steps, ncols=50)
-    for lr, hr in ds.take(remain_steps):
+    for lr, hr in dataset.take(remain_steps):
         checkpoint.step.assign_add(1)
         steps = checkpoint.step.numpy()
         total_loss_G, total_loss_D, losses_G, losses_D = train_step(lr, hr)
@@ -138,7 +140,7 @@ def main():
             **{"total_loss_G": total_loss_G.numpy()}, 
             **{"learning_rate_G": optimizer_G.lr(steps).numpy(),
             "learning_rate_D": optimizer_D.lr(steps).numpy()}})
-            
+
         pbar.set_description("loss_G={:.4f}, loss_D={:.4f}, lr_G={:.1e}, lr_D={:.1e}".format(
             total_loss_G.numpy(), total_loss_D.numpy(),
             optimizer_G.lr(steps).numpy(), optimizer_D.lr(steps).numpy()))

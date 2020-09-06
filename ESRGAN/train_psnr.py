@@ -47,8 +47,8 @@ def main():
     
     model = rrdb_net(input_shape=INPUT_SHAPE,scale_factor=SCALE)
     learning_rate = MultiStepLR(INITIAL_LR, LR_STEPS, LR_RATE)
-    optimizer = tf.keras.optimizer.Adam(learning_rate= learning_rate
-                                        beta_1= ADAM_BETA1_G
+    optimizer = tf.keras.optimizers.Adam(learning_rate= learning_rate,
+                                        beta_1= ADAM_BETA1_G,
                                         beta_2= ADAM_BETA2_G
                                         )
     pixel_loss = get_pixel_loss(PIXEL_CRITERION)
@@ -85,8 +85,8 @@ def main():
 
     remain_steps = max(NUM_ITER - checkpoint.step.numpy(), 0)
     pbar = tqdm(total=remain_steps, ncols=50)
-    for lr, hr in ds.take(remain_steps):
-        checkpoint.step.assing_add(1)
+    for lr, hr in dataset.take(remain_steps):
+        checkpoint.step.assign_add(1)
         steps = checkpoint.step.numpy()
         loss = train_step(lr, hr)
         wandb.log({"steps": steps, "loss": loss, "learning_rate": optimizer.lr(steps).numpy()})

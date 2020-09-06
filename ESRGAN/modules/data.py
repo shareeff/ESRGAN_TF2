@@ -26,7 +26,7 @@ def random_crop_and_flip(img, random_crop_size):
         image = tf.image.flip_left_right(image)
     return image
 
-def load_and_preprocess_image(image_path, hr_height, hr_width, scale, crop_per_image, ext):
+def load_and_preprocess_image(image_path, hr_height, hr_width, crop_per_image, ext):
     assert ext in ['.png', '.jpg', '.jpeg', '.JPEG']
     image = tf.io.read_file(image_path)
     if ext == '.png':
@@ -51,14 +51,14 @@ def load_dataset(hr_height, hr_width, scale, crop_per_image=20, ext='.png'):
     random.shuffle(image_paths)
     images = []
     for img_path in image_paths:
-        images += load_and_preprocess_image(img_path, hr_height, hr_width, scale, crop_per_image, ext)
+        images += load_and_preprocess_image(img_path, hr_height, hr_width, crop_per_image, ext)
 
     random.shuffle(images)
     hr_images = []
     lr_images = []
     for img in images:
         hr_image = img
-        lr_shape = [int(hr_image.shape[0]/4), int(hr_image.shape[1]/4)]
+        lr_shape = [int(hr_image.shape[0]/scale), int(hr_image.shape[1]/scale)]
         lr_image = tf.image.resize(hr_image, lr_shape, method=tf.image.ResizeMethod.BICUBIC)
         #lr_image = lr_image / 255
         lr_image = tf.clip_by_value(
