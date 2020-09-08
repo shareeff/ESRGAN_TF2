@@ -19,7 +19,7 @@ MODEL_PATH = "./saved/models/interp_esr.h5"
 #CHECKPOINT_PATH = "./saved/checkpoints/psnr"
 CHECKPOINT_PATH = "./saved/checkpoints/esrgan"
 IMG_PATH = "./images/input_hr/0825.png"
-SAVE_IMG_PATH = "./images/results/interp_esr_0825_grid.png"
+SAVE_IMG_PATH = "./images/results/interp_esr_0825.png"
 Path(SAVE_IMG_PATH).parent.mkdir(parents=True, exist_ok=True)
 
 def main():

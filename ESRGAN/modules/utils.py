@@ -58,16 +58,14 @@ def save_image_grid(lr, hr, ref=None, save_path=None):
         ref_title = "ref: {}".format(ref.shape)
         images += [ref]
         titles += [ref_title]
-        plt.figure(figsize=(60, 20))
-        fig, axes = plt.subplots(1, 3)
+        fig, axes = plt.subplots(1, 3, figsize=(20, 10))
     else: 
-        plt.figure(figsize=(40, 20))
-        fig, axes = plt.subplots(1, 2)
+        fig, axes = plt.subplots(1, 2, figsize=(20, 10))
         
     
     for i, (img, title) in enumerate(zip(images, titles)):
         axes[i].imshow(img)
-        axes[i].set_title(title)
+        axes[i].set_title(title, fontsize = 20)
         axes[i].axis('off')
     fig.savefig(save_path, bbox_inches = 'tight', pad_inches = 0.25)
     plt.close()

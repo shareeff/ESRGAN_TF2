@@ -16,8 +16,8 @@ FROM_CHECKPOINT = True
 MODEL_PATH = "./saved/models/esrgan.h5"
 #CHECKPOINT_PATH = "./saved/checkpoints/psnr"
 CHECKPOINT_PATH = "./saved/checkpoints/esrgan"
-IMG_PATH = "./images/input/meerkat.png"
-SAVE_IMG_PATH = "./images/results/esrgan_meerkat.png"
+IMG_PATH = "./images/input/lr_1.png"
+SAVE_IMG_PATH = "./images/results/esrgan_lr_1.png"
 Path(SAVE_IMG_PATH).parent.mkdir(parents=True, exist_ok=True)
 
 def main():
