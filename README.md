@@ -4,7 +4,7 @@ Tensorflow 2.0 implementation of ["ESRGAN: Enhanced Super-Resolution Generative 
 
 ## Architecture
 
-<img src='images/model/RRDN.jpg' width="80%" />
+<img src='./ESRGAN/images/model/RRDN.jpg' width="80%" />
 RRDB: Residual-in-Residual Dense Block net
 
 <img src='images/model/RDB.png' width="80%" />
@@ -12,15 +12,15 @@ RDB: Residual Dense Block (Basic Block)
 
 ## Results
 
-<img src='images/results/esrgan_0869x4-crop.png' width="80%" />
+<img src='./ESRGAN/images/results/esrgan_0869x4-crop.png' width="80%" />
 
-<img src='images/results/esrgan_lr_0.png' width="80%" />
+<img src='./ESRGAN/results/esrgan_lr_0.png' width="80%" />
 
-<img src='images/results/esrgan_lr_1.png' width="80%" />
+<img src='./ESRGAN/results/esrgan_lr_1.png' width="80%" />
 
-<img src='images/results/esrgan_PIPRM_3_crop.png' width="80%" />
+<img src='./ESRGAN/results/esrgan_PIPRM_3_crop.png' width="80%" />
 
-<img src='images/results/interp_esr_0855.png' width="80%" />
+<img src='./ESRGAN/results/interp_esr_0855.png' width="80%" />
 
 ## Reference
 
