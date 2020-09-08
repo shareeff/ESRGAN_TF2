@@ -1,9 +1,9 @@
 import os
 import numpy as np
+import matplotlib.pyplot as plt
 import tensorflow as tf 
 
-
-def create_lr_hr_pair(img_path, scale):
+def read_image(img_path):
     base=os.path.basename(img_path)
     ext = os.path.splitext(base)[1]
     assert ext in ['.png', '.jpg', '.jpeg', '.JPEG']
@@ -12,7 +12,10 @@ def create_lr_hr_pair(img_path, scale):
         image = tf.image.decode_png(image, channels=3)
     else:
         image = tf.image.decode_jpeg(image, channels=3)
-    
+    return image
+
+def create_lr_hr_pair(img_path, scale):
+    image = read_image(img_path)
     lr_height, lr_width = image.shape[0] // scale, image.shape[1] // scale
     hr_height, hr_width = lr_height * scale, lr_width * scale
     hr_image = image[:hr_height, :hr_width, :]
@@ -45,3 +48,26 @@ def unscale_image_0_255_range(image):
 def tensor2img(tensor):
     return (np.squeeze(tensor.numpy()).clip(0, 1) * 255).astype(np.uint8)
 
+
+def save_image_grid(lr, hr, ref=None, save_path=None):
+    lr_title = "lr: {}".format(lr.shape)
+    hr_title = "hr: {}".format(hr.shape)
+    images = [lr, hr]
+    titles = [lr_title, hr_title]
+    if ref:
+        ref_title = "ref: {}".format(ref.shape)
+        images += [ref]
+        titles += [ref_title]
+        plt.figure(figsize=(60, 20))
+        fig, axes = plt.subplots(1, 3)
+    else: 
+        plt.figure(figsize=(40, 20))
+        fig, axes = plt.subplots(1, 2)
+        
+    
+    for i, (img, title) in enumerate(zip(images, titles)):
+        axes[i].imshow(img)
+        axes[i].set_title(title)
+        axes[i].axis('off')
+    fig.savefig(save_path, bbox_inches = 'tight', pad_inches = 0.25)
+    plt.close()

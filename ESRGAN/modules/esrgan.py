@@ -1,6 +1,6 @@
 import tensorflow as tf 
 from tensorflow.keras import Model
-from tensorflow.keras.layers import Input, Conv2D, LeakyReLU, PReLU, Dropout
+from tensorflow.keras.layers import Input, Conv2D, LeakyReLU, PReLU, Dropout, Dense
 from tensorflow.keras.layers import BatchNormalization, Concatenate, Lambda, Add
 
 
@@ -69,8 +69,8 @@ def rrdb_net(input_shape=(None, None, 3), filters=64, scale_factor=4, name='RRDB
     return Model(inputs=lr_image, outputs=out, name=name)
 
 def conv2d_block(input, filters, strides=1, bn=True):
-    x = Conv2D(filters, kernel_size=3, strides=strides, padding='same')(x)
-    x = LeakyReLU(0.2)
+    x = Conv2D(filters, kernel_size=3, strides=strides, padding='same')(input)
+    x = LeakyReLU(0.2)(x)
     if bn:
         x = BatchNormalization(momentum=0.8)(x)
     return x

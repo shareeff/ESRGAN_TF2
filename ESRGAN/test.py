@@ -10,12 +10,13 @@ from modules.utils import create_lr_hr_pair, scale_image_0_1_range, tensor2img
 SCALE = 4
 INPUT_SHAPE=(None, None, 3)
 
-MODEL_PATH = "./saved/models/psnr.h5"
-#MODEL_PATH = "./saved/models/esrgan.h5"
-CHECKPOINT_PATH = "./saved/checkpoints/psnr"
-#CHECKPOINT_PATH = "./saved/checkpoints/esrgan"
+FROM_CHECKPOINT = True
+#MODEL_PATH = "./saved/models/psnr.h5"
+MODEL_PATH = "./saved/models/esrgan.h5"
+#CHECKPOINT_PATH = "./saved/checkpoints/psnr"
+CHECKPOINT_PATH = "./saved/checkpoints/esrgan"
 IMG_PATH = "./images/input_hr/0825.png"
-SAVE_IMG_PATH = "./images/results/psnr_0825.png"
+SAVE_IMG_PATH = "./images/results/esrgan_0825.png"
 Path(SAVE_IMG_PATH).parent.mkdir(parents=True, exist_ok=True)
 
 def main():
@@ -23,7 +24,7 @@ def main():
     model = rrdb_net(input_shape=INPUT_SHAPE,scale_factor=SCALE)
 
     checkpoint = tf.train.Checkpoint(model=model)
-    if tf.train.latest_checkpoint(CHECKPOINT_PATH):
+    if tf.train.latest_checkpoint(CHECKPOINT_PATH) and FROM_CHECKPOINT:
         checkpoint.restore(tf.train.latest_checkpoint(CHECKPOINT_PATH))
         print("[*] load ckpt from {}.".format(
             tf.train.latest_checkpoint(CHECKPOINT_PATH)))

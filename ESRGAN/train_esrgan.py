@@ -99,7 +99,7 @@ def main():
 
     @tf.function
     def train_step(lr, hr):
-         with tf.GradientTape() as tape:
+        with tf.GradientTape(persistent=True) as tape:
             generated_hr = generator(lr, training=True)
             real_logits = discriminator(hr, training=True)
             fake_logits = discriminator(generated_hr, training=True)
