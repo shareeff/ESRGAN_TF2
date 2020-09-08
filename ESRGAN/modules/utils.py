@@ -54,7 +54,7 @@ def save_image_grid(lr, hr, ref=None, save_path=None):
     hr_title = "hr: {}".format(hr.shape)
     images = [lr, hr]
     titles = [lr_title, hr_title]
-    if ref:
+    if ref is not None:
         ref_title = "ref: {}".format(ref.shape)
         images += [ref]
         titles += [ref_title]

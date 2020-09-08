@@ -7,6 +7,7 @@ from modules.utils import read_image, scale_image_0_1_range, tensor2img
 from modules.utils import save_image_grid
 
 
+
 SCALE = 4
 INPUT_SHAPE=(None, None, 3)
 
@@ -50,6 +51,7 @@ def main():
         #img = Image.fromarray(generated_hr_image)
         #img.save(SAVE_IMG_PATH)
         save_image_grid(unscale_lr_image, generated_hr_image, save_path=SAVE_IMG_PATH)
+       
 
 
 if __name__ == '__main__':
